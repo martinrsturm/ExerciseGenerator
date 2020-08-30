@@ -75,8 +75,8 @@ class MainWindow:
         self.exercise_entries[6].insert(0, exercise.params[2])
 
     def add_exercise(self):
-        title = r'''Addition von Br\"uchen'''
-        text = 'Berechne die folgenden Terme und k\"urze soweit wie m\"oglich.'
+        title = r'''Addition von Brüchen'''
+        text = 'Berechne die folgenden Terme und kürze soweit wie möglich.'
         exercise_type = 'fraction'
         number_of_sub_exercises = 6
         params = [9, 15, 'plus']
@@ -113,8 +113,13 @@ class MainWindow:
     def make_exercise_entries(self):
         iterator = 3
         for param_string in exergen.FractionSubExercise.param_list:
-            entry = Entry(self.frame)
-            entry.bind("<KeyRelease>", self.update_exercise)
+            if iterator == 5:
+                entry = Combobox(self.frame, values=['fraction'])
+            elif iterator == 9:
+                entry = Combobox(self.frame, values=['plus', 'minus', 'mal', 'geteilt'])
+            else:
+                entry = Entry(self.frame)
+            entry.bind("<FocusOut>", self.update_exercise)
             entry.grid(column=1, row=iterator)
             self.exercise_entries.append(entry)
             iterator = iterator + 1
