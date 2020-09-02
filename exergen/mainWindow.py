@@ -35,11 +35,12 @@ class MainWindow:
         self.add_exercise_button.grid(column=2, row=1)
 
         self.exercises = []
+        self.index_active_exercise = -1
 
-    def update_exercise(self, event):
+    def update_exercise(self, event=None):
         try:
-            title = self.exercise_entries[0].get()
-            text = self.exercise_entries[1].get()
+            title = self.exercise_entries[0].get(1.0, END)
+            text = self.exercise_entries[1].get(1.0, END)
             exercise_type = self.exercise_entries[2].get()
             number_of_sub_exercises = int(self.exercise_entries[3].get())
             params = []
@@ -50,19 +51,21 @@ class MainWindow:
                     params.append(entry.get())
             exercise = exergen.Exercise(title, text, exercise_type, number_of_sub_exercises, params)
             index = self.list_box.curselection()[0]
-            self.exercises[index] = exercise
+            self.exercises[self.index_active_exercise] = exercise
         except:
             return
 
-    def update_exercise_entries(self, event):
+    def update_exercise_entries(self, event=None):
         if not self.list_box.curselection():
             return
+        self.update_exercise()
         index = self.list_box.curselection()[0]
+        self.index_active_exercise = index
         exercise = self.exercises[index]
-        self.exercise_entries[0].delete(0, END)
-        self.exercise_entries[0].insert(0, exercise.title)
-        self.exercise_entries[1].delete(0, END)
-        self.exercise_entries[1].insert(0, exercise.text)
+        self.exercise_entries[0].delete(1.0, END)
+        self.exercise_entries[0].insert(END, exercise.title)
+        self.exercise_entries[1].delete(1.0, END)
+        self.exercise_entries[1].insert(END, exercise.text)
         self.exercise_entries[2].delete(0, END)
         self.exercise_entries[2].insert(0, exercise.type)
         self.exercise_entries[3].delete(0, END)
@@ -93,11 +96,11 @@ class MainWindow:
         self.document_labels.append(label_file_name)
 
     def make_document_entries(self):
-        entry_title = Entry(self.frame)
+        entry_title = Entry(self.frame, width=40)
         entry_title.grid(column=1, row=0)
         entry_title.insert(0, "Aufgabenblatt zur Bruchrechnung")
         self.document_entries.append(entry_title)
-        entry_file_name = Entry(self.frame)
+        entry_file_name = Entry(self.frame, width=40)
         entry_file_name.grid(column=1, row=1)
         entry_file_name.insert(0, "document")
         self.document_entries.append(entry_file_name)
@@ -116,9 +119,14 @@ class MainWindow:
             if iterator == 5:
                 entry = Combobox(self.frame, values=['fraction'])
             elif iterator == 9:
-                entry = Combobox(self.frame, values=['plus', 'minus', 'mal', 'geteilt'])
+                entry = Combobox(self.frame,
+                                 values=['plus', 'minus', 'mal', 'geteilt'])
+            elif iterator == 3:
+                entry = Text(self.frame, height=2, width=40)
+            elif iterator == 4:
+                entry = Text(self.frame, height=5, width=40)
             else:
-                entry = Entry(self.frame)
+                entry = Entry(self.frame, width=40)
             entry.bind("<FocusOut>", self.update_exercise)
             entry.grid(column=1, row=iterator)
             self.exercise_entries.append(entry)

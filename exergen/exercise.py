@@ -19,9 +19,9 @@ class Exercise:
 
     def intro(self):
         string = r'''\section{'''
-        string += self.title
+        string += self.title.replace('\n', ' ').replace('\r', '')
         string += r'''} '''
-        string += self.text
+        string += self.text.replace('\n', ' ').replace('\r', '')
         return string
 
     def grid(self, is_solution):
