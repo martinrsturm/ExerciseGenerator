@@ -3,14 +3,14 @@ import exergen
 
 class Exercise:
 
-    def __init__(self, title, text, type, num_sub_exercises, params):
+    def __init__(self, title, text, problem_generator, number_of_problems):
         self.title = title
-        self.num_sub_exercises = num_sub_exercises
+        self.number_of_problems = number_of_problems
         self.text = text
-        self.type = type
-        self.sub_exercises = []
-        self.params = params
-        self.make_sub_exercises()
+        self.problem_generator = problem_generator
+        self.problem_strings = []
+        self.solution_strings = []
+        self.generate_exercise_and_solution_strings()
 
     def make_latex(self, is_solution):
         string = self.intro()
@@ -27,15 +27,22 @@ class Exercise:
     def grid(self, is_solution):
         string = r'''\newline'''
         string += r'''\begin{enumerate}[label=(\alph*),itemsep=3ex] '''
-        for sub_ex in self.sub_exercises:
-            string += r'''\item '''
-            string += sub_ex.print(is_solution)
+        if is_solution:
+            for solution_string in self.solution_strings:
+                string += r'''\item '''
+                string += solution_string
+        else:
+            for problem_string in self.problem_strings:
+                string += r'''\item '''
+                string += problem_string
         string += r'''\end{enumerate}'''
         return string
 
-    def make_sub_exercises(self):
-        for i in range(self.num_sub_exercises):
-            if self.type == 'fraction':
-                self.sub_exercises.append(exergen.FractionSubExercise(self.params[0],
-                                                                      self.params[1],
-                                                                      self.params[2]))
+    def generate_exercise_and_solution_strings(self):
+        self.problem_strings = []
+        self.solution_strings = []
+        for i in range(self.number_of_problems):
+            strings = self.problem_generator.generate_problem_and_solution()
+            self.problem_strings.append(strings[0])
+            self.solution_strings.append(strings[1])
+
