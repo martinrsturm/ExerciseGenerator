@@ -40,7 +40,8 @@ class FractionProblemGenerator:
             string += r'''}'''
             if i < self.number_of_fractions - 1:
                 string += r'''+'''
-        string += r'''$'''
+        string += r'''=$'''
+        string += r'''\xrfill[-1ex]{0.5pt}[black]'''
         return string
 
     def generate_solution_string(self):

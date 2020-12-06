@@ -43,7 +43,7 @@ class Document:
         string += r'''\usepackage{amsmath} '''
         string += r'''\usepackage{enumitem} '''
         string += r'''\usepackage{german} '''
-        string += r'''\usepackage[normalem]{ulem} '''
+        string += r'''\usepackage{xhfill} '''
         string += r'''\usepackage{titling} '''
         string += r'''\setlength{\droptitle}{-8cm} '''
         string += r'''\pagestyle{empty}'''
