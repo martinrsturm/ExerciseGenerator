@@ -1,2 +1,2 @@
 # ExerciseGenerator
-This is program generates exercise sheets for math.
+This program generates exercise sheets for math using LaTeX.
