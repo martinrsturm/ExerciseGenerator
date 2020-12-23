@@ -13,7 +13,7 @@ def make_default_exercise():
     text = 'Text'
     exercise_type = 'fraction'
     number_of_sub_exercises = 6
-    params = [2, 9, 15, 'plus']
+    params = [2, 9, 15, '+']
     problem_generator = exergen.make_problem_generator(exercise_type, params)
     exercise = exergen.Exercise(title, text, problem_generator, number_of_sub_exercises)
     return exercise

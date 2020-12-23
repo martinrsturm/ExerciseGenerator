@@ -39,7 +39,7 @@ class FractionProblemGenerator:
             string += str(self.denominators[i])
             string += r'''}'''
             if i < self.number_of_fractions - 1:
-                string += r'''+'''
+                string += self.operation_string()
         string += r'''=$'''
         string += r'''\xrfill[-1ex]{0.5pt}[black]'''
         return string
@@ -53,7 +53,7 @@ class FractionProblemGenerator:
             string += str(self.denominators[i])
             string += r'''}'''
             if i < self.number_of_fractions - 1:
-                string += r'''+'''
+                string += self.operation_string()
         string += r'''='''
         string += sympy.latex(self.expression)
         string += r'''$'''
@@ -73,7 +73,16 @@ class FractionProblemGenerator:
         self.nominators = []
         self.denominators = []
         for i in range(self.number_of_fractions):
-            self.expression += self.generate_random_fraction()
+            if self.operation == '+' or i == 0:
+                self.expression += self.generate_random_fraction()
+            elif self.operation == '-':
+                self.expression -= self.generate_random_fraction()
+            elif self.operation == '*':
+                self.expression *= self.generate_random_fraction()
+            elif self.operation == '/':
+                self.expression /= self.generate_random_fraction()
+            else:
+                self.expression += self.generate_random_fraction()
 
     def generate_random_fraction(self):
         nom_equals_denom = True
@@ -90,5 +99,14 @@ class FractionProblemGenerator:
         nominator_is_valid = (self.expression.as_numer_denom()[0] <= self.max_nominator)
         denominator_is_valid = (self.expression.as_numer_denom()[1] <= self.max_denominator)
         return nominator_is_valid and denominator_is_valid
+
+    def operation_string(self):
+        if self.operation == '*':
+            return r'''\cdot'''
+        elif self.operation == '/':
+            return r''':'''
+        else:
+            return self.operation
+
 
 
