@@ -119,7 +119,7 @@ class MainWindow:
     def make_document_entries(self):
         entry_title = Entry(self.frame, width=40)
         entry_title.grid(column=1, row=0)
-        entry_title.insert(0, "Aufgabenblatt zur Bruchrechnung")
+        entry_title.insert(0, "Exercise sheet")
         self.document_entries.append(entry_title)
         entry_file_name = Entry(self.frame, width=40)
         entry_file_name.grid(column=1, row=1)
@@ -135,7 +135,7 @@ class MainWindow:
             elif iterator == 5:
                 label_string = 'Type'
             elif iterator == 6:
-                label_string = 'Number'
+                label_string = 'Number of problems'
             else:
                 labels = self.exercises[self.index_active_exercise].problem_generator.get_labels()
                 index = iterator - 7

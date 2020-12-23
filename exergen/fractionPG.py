@@ -8,7 +8,7 @@ class FractionProblemGenerator:
         self.number_of_fractions = int(params[0])
         self.max_nominator = int(params[1])
         self.max_denominator = int(params[2])
-        self.operations = params[3]
+        self.operation = params[3]
         self.expression = 0
         self.nominators = []
         self.denominators = []
@@ -20,11 +20,11 @@ class FractionProblemGenerator:
         return problem, solution
 
     def get_params(self):
-        return str(self.number_of_fractions), str(self.max_nominator), str(self.max_denominator), self.operations
+        return str(self.number_of_fractions), str(self.max_nominator), str(self.max_denominator), self.operation
 
     @staticmethod
     def get_labels():
-        return 'number of fractions', 'maximal nominator', 'maximal denominator', 'operations'
+        return 'Number of fractions', 'Maximal nominator', 'Maximal denominator', 'Operation'
 
     @staticmethod
     def get_type():

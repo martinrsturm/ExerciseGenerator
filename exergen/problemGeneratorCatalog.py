@@ -9,8 +9,8 @@ def make_problem_generator(problem_type, params):
 
 
 def make_default_exercise():
-    title = 'Titel'
-    text = 'Aufgabenstellung'
+    title = 'Title'
+    text = 'Text'
     exercise_type = 'fraction'
     number_of_sub_exercises = 6
     params = [2, 9, 15, 'plus']
