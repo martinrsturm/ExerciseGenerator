@@ -1,7 +1,9 @@
+"""The Document class"""
 import os
 
 
 class Document:
+    """This class implements the skeleton of a LaTeX document"""
 
     def __init__(self, document_class, font_size, file_name, title, date=r'''\today'''):
         self.document_class = document_class
@@ -13,6 +15,7 @@ class Document:
         self.exercises = []
 
     def make_pdf(self):
+        """Generates the PDF output"""
         # make the exercise sheet
         file = open(self.file_name + ".tex", "w")
         file.write(self.make_latex(False))
@@ -27,6 +30,7 @@ class Document:
         self.clean_up()
 
     def make_latex(self, is_solution):
+        """Generates the .tex file"""
         string = self.header()
         string += self.begin_document()
         for ex in self.exercises:
@@ -35,6 +39,7 @@ class Document:
         return string
 
     def header(self):
+        """Writes the LaTeX header"""
         string = r'''\documentclass['''
         string += str(self.font_size)
         string += r'''pt]{'''
@@ -50,6 +55,7 @@ class Document:
         return string
 
     def begin_document(self):
+        """Begin of the document"""
         string = r'''\begin{document} '''
         string += r'''\hfill '''
         string += self.date
@@ -58,11 +64,14 @@ class Document:
         string += r''' \end{center} '''
         return string
 
-    def end_document(self):
+    @staticmethod
+    def end_document():
+        """End of the document"""
         string = r'''\end{document} '''
         return string
 
     def clean_up(self):
+        """Clean up the .tex and log files"""
         os.remove(self.file_name + ".log")
         os.remove(self.file_name + ".aux")
         os.remove(self.file_name + ".tex")
@@ -71,4 +80,5 @@ class Document:
         os.remove(self.file_name_solution + ".tex")
 
     def add_exercise(self, exercise):
+        """Adds an exercise"""
         self.exercises.append(exercise)

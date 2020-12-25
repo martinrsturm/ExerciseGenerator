@@ -26,27 +26,35 @@ class MainWindow:
         self.exercise_entries = []
         self.make_exercise_entries()
 
-        Separator(self.frame, orient=HORIZONTAL).grid(row=2, columnspan=5, sticky="ew", pady=10)
+        Separator(self.frame, orient=HORIZONTAL).grid(
+            row=2, columnspan=5, sticky="ew", pady=10)
 
-        self.list_box = Listbox(self.frame, selectmode='browse', exportselection=0)
-        self.list_box.grid(column=2, row=3, columnspan=2, rowspan=8, padx=10, pady=10)
+        self.list_box = Listbox(
+            self.frame, selectmode='browse', exportselection=0)
+        self.list_box.grid(column=2, row=3, columnspan=2,
+                           rowspan=8, padx=10, pady=10)
         self.list_box.bind('<<ListboxSelect>>', self.update_exercise_entries)
 
-        self.make_pdf_button = Button(self.frame, text="Make PDF", command=self.make_pdf)
+        self.make_pdf_button = Button(
+            self.frame, text="Make PDF", command=self.make_pdf)
         self.make_pdf_button.grid(column=2, row=0)
 
-        self.add_exercise_button = Button(self.frame, text="Add exercise", command=self.add_exercise)
+        self.add_exercise_button = Button(
+            self.frame, text="Add exercise", command=self.add_exercise)
         self.add_exercise_button.grid(column=2, row=1)
 
         self.select_initial_exercise()
 
     def select_initial_exercise(self):
-        self.list_box.insert(END, self.exercises[self.index_active_exercise].title)
+        """Selecting the initial entry in the listbox"""
+        self.list_box.insert(
+            END, self.exercises[self.index_active_exercise].title)
         self.list_box.select_set(0)
         self.list_box.event_generate("<<ListboxSelect>>")
         self.initialize_exercise_entries()
 
     def update_exercise(self, event=None):
+        """Updating the exercise after changes in the GUI entries"""
         title = self.exercise_entries[0].get(1.0, END)
         text = self.exercise_entries[1].get(1.0, END)
         problem_type = self.exercise_entries[2].get()
@@ -54,13 +62,16 @@ class MainWindow:
         params = []
         for entry in self.exercise_entries[4:]:
             params.append(entry.get())
-        problem_generator = exergen.make_problem_generator(problem_type, params)
-        exercise = exergen.Exercise(title, text, problem_generator, number_of_sub_exercises)
+        problem_generator = exergen.make_problem_generator(
+            problem_type, params)
+        exercise = exergen.Exercise(
+            title, text, problem_generator, number_of_sub_exercises)
         index = self.list_box.curselection()[0]
         self.exercises[self.index_active_exercise] = exercise
         return
 
     def update_exercise_entries(self, event=None):
+        """Update the GUI entries after selecting a different exercise"""
         if not self.list_box.curselection():
             return
         self.update_exercise()
@@ -72,7 +83,8 @@ class MainWindow:
         self.exercise_entries[1].delete(1.0, END)
         self.exercise_entries[1].insert(END, exercise.text)
         self.exercise_entries[2].delete(0, END)
-        self.exercise_entries[2].insert(0, exercise.problem_generator.get_type())
+        self.exercise_entries[2].insert(
+            0, exercise.problem_generator.get_type())
         self.exercise_entries[3].delete(0, END)
         self.exercise_entries[3].insert(0, exercise.number_of_problems)
         params = exercise.problem_generator.get_params()
@@ -83,6 +95,7 @@ class MainWindow:
             index = index + 1
 
     def initialize_exercise_entries(self, event=None):
+        """initializing the GUI entries with values from the current exercise"""
         if not self.list_box.curselection():
             return
         index = self.list_box.curselection()[0]
@@ -93,7 +106,8 @@ class MainWindow:
         self.exercise_entries[1].delete(1.0, END)
         self.exercise_entries[1].insert(END, exercise.text)
         self.exercise_entries[2].delete(0, END)
-        self.exercise_entries[2].insert(0, exercise.problem_generator.get_type())
+        self.exercise_entries[2].insert(
+            0, exercise.problem_generator.get_type())
         self.exercise_entries[3].delete(0, END)
         self.exercise_entries[3].insert(0, exercise.number_of_problems)
         params = exercise.problem_generator.get_params()
@@ -104,11 +118,13 @@ class MainWindow:
             index = index + 1
 
     def add_exercise(self):
+        """Adds a new exercise"""
         exercise = exergen.make_default_exercise()
         self.exercises.append(exercise)
         self.list_box.insert(END, exercise.title)
 
     def make_document_labels(self):
+        """Makes the labels for the document related GUI part"""
         label_title = Label(self.frame, text='Title')
         label_title.grid(column=0, row=0, sticky=W)
         self.document_labels.append(label_title)
@@ -117,6 +133,7 @@ class MainWindow:
         self.document_labels.append(label_file_name)
 
     def make_document_entries(self):
+        """Makes the entries for the exercise related GUI part"""
         entry_title = Entry(self.frame, width=40)
         entry_title.grid(column=1, row=0)
         entry_title.insert(0, "Exercise sheet")
@@ -127,6 +144,7 @@ class MainWindow:
         self.document_entries.append(entry_file_name)
 
     def make_exercise_labels(self):
+        """Makes the labels for the exercise related GUI part"""
         for iterator in range(3, 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())):
             if iterator == 3:
                 label_string = 'Title'
@@ -137,7 +155,8 @@ class MainWindow:
             elif iterator == 6:
                 label_string = 'Number of problems'
             else:
-                labels = self.exercises[self.index_active_exercise].problem_generator.get_labels()
+                labels = self.exercises[self.index_active_exercise].problem_generator.get_labels(
+                )
                 index = iterator - 7
                 label_string = labels[index]
             label = Label(self.frame, text=label_string)
@@ -145,6 +164,7 @@ class MainWindow:
             self.document_labels.append(label)
 
     def make_exercise_entries(self):
+        """Makes the entries for the exercise related GUI part"""
         for iterator in range(3, 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())):
             if iterator == 3:
                 entry = Text(self.frame, height=2, width=40)
@@ -161,6 +181,7 @@ class MainWindow:
             self.exercise_entries.append(entry)
 
     def make_pdf(self):
+        """Triggers the generation of the PDF output"""
         title = self.document_entries[0].get()
         file_name = self.document_entries[1].get()
         doc = exergen.Document('scrartcl', 12, file_name, title)
