@@ -1,4 +1,4 @@
-"""The exergen module"""
+"""The exergen package"""
 from .document import Document
 from .exercise import Exercise
 from .mainWindow import MainWindow
