@@ -1,9 +1,11 @@
-from tkinter import *
-from tkinter.ttk import *
+"""The main window of the program"""
+from tkinter import Listbox, HORIZONTAL, Button, END, Label, Entry, Text, W
+from tkinter.ttk import Frame, Separator, Combobox
 import exergen
 
 
 class MainWindow:
+    """This class implements the programs GUI"""
 
     def __init__(self, master):
         self.exercises = []
@@ -66,9 +68,7 @@ class MainWindow:
             problem_type, params)
         exercise = exergen.Exercise(
             title, text, problem_generator, number_of_sub_exercises)
-        index = self.list_box.curselection()[0]
         self.exercises[self.index_active_exercise] = exercise
-        return
 
     def update_exercise_entries(self, event=None):
         """Update the GUI entries after selecting a different exercise"""
@@ -145,7 +145,8 @@ class MainWindow:
 
     def make_exercise_labels(self):
         """Makes the labels for the exercise related GUI part"""
-        for iterator in range(3, 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())):
+        limit = 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())
+        for iterator in range(3, limit):
             if iterator == 3:
                 label_string = 'Title'
             elif iterator == 4:
@@ -165,7 +166,8 @@ class MainWindow:
 
     def make_exercise_entries(self):
         """Makes the entries for the exercise related GUI part"""
-        for iterator in range(3, 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())):
+        limit = 7 + len(self.exercises[self.index_active_exercise].problem_generator.get_labels())
+        for iterator in range(3, limit):
             if iterator == 3:
                 entry = Text(self.frame, height=2, width=40)
             elif iterator == 4:
