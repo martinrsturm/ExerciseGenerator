@@ -12,8 +12,7 @@ class FractionProblemGenerator:
         self.max_denominator = int(params[2])
         self.operation = params[3]
         self.expression = 0
-        self.nominators = []
-        self.denominators = []
+        self.fractions = []
 
     def generate_problem_and_solution(self):
         """Generating the latex output for the problem and the solution"""
@@ -41,11 +40,7 @@ class FractionProblemGenerator:
         """Generating the LaTeX string for a problem"""
         string = r'''$'''
         for i in range(self.number_of_fractions):
-            string += r'''\frac{'''
-            string += str(self.nominators[i])
-            string += r'''}{'''
-            string += str(self.denominators[i])
-            string += r'''}'''
+            string += sympy.latex(self.fractions[i])
             if i < self.number_of_fractions - 1:
                 string += self.operation_string()
         string += r'''=$'''
@@ -56,11 +51,7 @@ class FractionProblemGenerator:
         """Generating the LaTeX string for a solution"""
         string = r'''$'''
         for i in range(self.number_of_fractions):
-            string += r'''\frac{'''
-            string += str(self.nominators[i])
-            string += r'''}{'''
-            string += str(self.denominators[i])
-            string += r'''}'''
+            string += sympy.latex(self.fractions[i])
             if i < self.number_of_fractions - 1:
                 string += self.operation_string()
         string += r'''='''
@@ -71,8 +62,7 @@ class FractionProblemGenerator:
     def generate_valid_expression(self):
         """Generate the fractions for a problem"""
         self.expression = 0
-        self.nominators = []
-        self.denominators = []
+        self.fractions = []
         found_valid_expression = False
         while not found_valid_expression:
             self.generate_random_expression()
@@ -81,8 +71,7 @@ class FractionProblemGenerator:
     def generate_random_expression(self):
         """Generates a random fraction expression"""
         self.expression = 0
-        self.nominators = []
-        self.denominators = []
+        self.fractions = []
         for i in range(self.number_of_fractions):
             if self.operation == '+' or i == 0:
                 self.expression += self.generate_random_fraction()
@@ -97,22 +86,21 @@ class FractionProblemGenerator:
 
     def generate_random_fraction(self):
         """Generate a random fraction"""
-        nom_equals_denom = True
-        while nom_equals_denom:
+        rest_equlas_zero = True
+        while rest_equlas_zero:
             nominator = randint(1, self.max_nominator)
             denominator = randint(2, self.max_denominator)
-            nom_equals_denom = nominator == denominator
-            if not nom_equals_denom:
-                self.nominators.append(nominator)
-                self.denominators.append(denominator)
-        return sympy.Rational(self.nominators[-1], self.denominators[-1])
+            rest_equlas_zero = (nominator % denominator) == 0
+            if not rest_equlas_zero:
+                self.fractions.append(sympy.Rational(nominator, denominator))
+        return self.fractions[-1]
 
     def check_expression(self):
         """Check if the randomly generated expression is useful"""
-        nominator_is_valid = (self.expression.as_numer_denom()[
-                              0] <= self.max_nominator)
-        denominator_is_valid = (self.expression.as_numer_denom()[
-                                1] <= self.max_denominator)
+        nominator_is_valid = (self.expression.as_numer_denom()[0] 
+                                <= self.max_nominator)
+        denominator_is_valid = (self.expression.as_numer_denom()[1] 
+                                <= self.max_denominator)
         return nominator_is_valid and denominator_is_valid
 
     def operation_string(self):
