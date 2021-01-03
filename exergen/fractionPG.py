@@ -1,5 +1,5 @@
 """Generating problems related to fractions"""
-from random import randint
+from random import randint, choice
 import sympy
 
 
@@ -10,9 +10,10 @@ class FractionProblemGenerator:
         self.number_of_fractions = int(params[0])
         self.max_nominator = int(params[1])
         self.max_denominator = int(params[2])
-        self.operation = params[3]
+        self.operation_set = params[3]
         self.expression = 0
         self.fractions = []
+        self.operations = []
 
     def generate_problem_and_solution(self):
         """Generating the latex output for the problem and the solution"""
@@ -24,12 +25,12 @@ class FractionProblemGenerator:
     def get_params(self):
         """Returns the parameters given to the constructor"""
         return (str(self.number_of_fractions), str(self.max_nominator),
-                str(self.max_denominator), self.operation)
+                str(self.max_denominator), self.operation_set)
 
     @staticmethod
     def get_labels():
         """The labels for the GUI"""
-        return 'Number of fractions', 'Maximal nominator', 'Maximal denominator', 'Operation'
+        return 'Number of fractions', 'Maximal nominator', 'Maximal denominator', 'Operations'
 
     @staticmethod
     def get_type():
@@ -42,7 +43,7 @@ class FractionProblemGenerator:
         for i in range(self.number_of_fractions):
             string += sympy.latex(self.fractions[i])
             if i < self.number_of_fractions - 1:
-                string += self.operation_string()
+                string += self.operation_string(self.operations[i])
         string += r'''=$'''
         string += r'''\xrfill[-1ex]{0.5pt}[black]'''
         return string
@@ -53,7 +54,7 @@ class FractionProblemGenerator:
         for i in range(self.number_of_fractions):
             string += sympy.latex(self.fractions[i])
             if i < self.number_of_fractions - 1:
-                string += self.operation_string()
+                string += self.operation_string(self.operations[i])
         string += r'''='''
         string += sympy.latex(self.expression)
         string += r'''$'''
@@ -61,8 +62,6 @@ class FractionProblemGenerator:
 
     def generate_valid_expression(self):
         """Generate the fractions for a problem"""
-        self.expression = 0
-        self.fractions = []
         found_valid_expression = False
         while not found_valid_expression:
             self.generate_random_expression()
@@ -72,17 +71,14 @@ class FractionProblemGenerator:
         """Generates a random fraction expression"""
         self.expression = 0
         self.fractions = []
+        self.operations = []
+        expression_string = ''
         for i in range(self.number_of_fractions):
-            if self.operation == '+' or i == 0:
-                self.expression += self.generate_random_fraction()
-            elif self.operation == '-':
-                self.expression -= self.generate_random_fraction()
-            elif self.operation == '*':
-                self.expression *= self.generate_random_fraction()
-            elif self.operation == '/':
-                self.expression /= self.generate_random_fraction()
-            else:
-                self.expression += self.generate_random_fraction()
+            expression_string += self.print_fraction(self.generate_random_fraction())
+            if i < self.number_of_fractions - 1:
+                self.operations.append(choice(self.operation_set))
+                expression_string += self.operations[-1]
+        self.expression = eval(expression_string)
 
     def generate_random_fraction(self):
         """Generate a random fraction"""
@@ -95,6 +91,15 @@ class FractionProblemGenerator:
                 self.fractions.append(sympy.Rational(nominator, denominator))
         return self.fractions[-1]
 
+    @staticmethod
+    def print_fraction(fraction):
+        fraction_string = 'sympy.Rational('
+        fraction_string += str(fraction.as_numer_denom()[0])
+        fraction_string += ','
+        fraction_string += str(fraction.as_numer_denom()[1])
+        fraction_string += ')'
+        return fraction_string
+
     def check_expression(self):
         """Check if the randomly generated expression is useful"""
         nominator_is_valid = (self.expression.as_numer_denom()[0] 
@@ -103,11 +108,11 @@ class FractionProblemGenerator:
                                 <= self.max_denominator)
         return nominator_is_valid and denominator_is_valid
 
-    def operation_string(self):
-        """Returns the LaTeX string for the chosen mathematical opaeration"""
-        if self.operation == '*':
+    def operation_string(self, op_string):
+        """Returns the LaTeX string for the chosen mathematical operation"""
+        if op_string == '*':
             return r'''\cdot'''
-        elif self.operation == '/':
+        elif op_string == '/':
             return r''':'''
         else:
-            return self.operation
+            return op_string
