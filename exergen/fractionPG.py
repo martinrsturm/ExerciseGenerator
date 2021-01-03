@@ -104,11 +104,12 @@ class FractionProblemGenerator:
 
     def check_expression(self):
         """Check if the randomly generated expression is useful"""
-        nominator_is_valid = (self.expression.as_numer_denom()[0]
+        no_duplicates = len(self.fractions) == len(set(self.fractions))
+        nominator_is_valid = (abs(self.expression.as_numer_denom()[0])
                               <= self.max_nominator)
-        denominator_is_valid = (self.expression.as_numer_denom()[1]
+        denominator_is_valid = (abs(self.expression.as_numer_denom()[1])
                                 <= self.max_denominator)
-        return nominator_is_valid and denominator_is_valid
+        return no_duplicates and nominator_is_valid and denominator_is_valid
 
     @staticmethod
     def operation_string(op_string):
